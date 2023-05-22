@@ -47,7 +47,7 @@ class Word:
         self.base_form = mecab_res.split("\t")[2]
         self.moras = self.__get_moras()
 
-    def __get_yomi_roman_li(self):
+    def __get_romanized_yomi_li(self):
         """読み仮名のローマ字表記を返す
 
         - 区切り単位はモーラ
@@ -55,8 +55,7 @@ class Word:
         - 長音は前の仮名の母音に変換する
         """
         kanas = list(self.yomi)
-        # roman_li:list[str] = [romkan.to_roma(kana) for kana in kanas]
-        roman_li: list[str] = []
+        romanized_li: list[str] = []
         added_now = False
         for i in range(1, len(kanas)):
             if added_now:
@@ -65,23 +64,23 @@ class Word:
             prev = kanas[i - 1]
             now = kanas[i]
             if now in {"ャ", "ュ", "ョ", "ヮ"}:
-                roman_li.append(romkan.to_roma(prev + now))
+                romanized_li.append(romkan.to_roma(prev + now))
                 added_now = True
             elif now == "ー":
                 roman = romkan.to_roma(prev)
-                roman_li.append(roman)
-                roman_li.append(roman[-1])
+                romanized_li.append(roman)
+                romanized_li.append(roman[-1])
                 added_now = True
             else:
-                roman_li.append(romkan.to_roma(prev))
+                romanized_li.append(romkan.to_roma(prev))
         if not added_now:
-            roman_li.append(romkan.to_roma(kanas[-1]))
-        return roman_li
+            romanized_li.append(romkan.to_roma(kanas[-1]))
+        return romanized_li
 
     def __get_moras(self):
         """読み仮名のローマ字表記からモーラを返す"""
-        yomi_roman_li = self.__get_yomi_roman_li()
-        return list(map(Mora, yomi_roman_li))
+        romanized_yomi_li = self.__get_romanized_yomi_li()
+        return list(map(Mora, romanized_yomi_li))
 
     def __repr__(self) -> str:
         return self.surface
