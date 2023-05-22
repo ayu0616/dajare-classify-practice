@@ -36,7 +36,13 @@ class Mora:
         return self.consonant == self.__SYLLABIC_NASAL__
 
     def __repr__(self) -> str:
-        return str((self.consonant, self.vowel))
+        return f"({self.consonant}, {self.vowel})"
+
+    def __eq__(self, __value: object) -> bool:
+        if type(__value) != Mora:
+            return NotImplemented
+
+        return self.consonant == __value.consonant and self.vowel == __value.vowel
 
 
 class Word:
