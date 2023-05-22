@@ -57,19 +57,25 @@ class Word:
         kanas = list(self.yomi)
         # roman_li:list[str] = [romkan.to_roma(kana) for kana in kanas]
         roman_li: list[str] = []
+        added_now = False
         for i in range(1, len(kanas)):
+            if added_now:
+                added_now = False
+                continue
             prev = kanas[i - 1]
             now = kanas[i]
             if now in {"ャ", "ュ", "ョ", "ヮ"}:
                 roman_li.append(romkan.to_roma(prev + now))
-                i += 1
+                added_now = True
             elif now == "ー":
                 roman = romkan.to_roma(prev)
                 roman_li.append(roman)
                 roman_li.append(roman[-1])
-                i += 1
+                added_now = True
             else:
                 roman_li.append(romkan.to_roma(prev))
+        if not added_now:
+            roman_li.append(romkan.to_roma(kanas[-1]))
         return roman_li
 
     def __get_moras(self):
