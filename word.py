@@ -1,4 +1,8 @@
+from functools import lru_cache
+
 import romkan
+
+from setting import CONTENT_WORD_SET
 
 
 class Mora:
@@ -52,6 +56,10 @@ class Word:
         self.part_of_speech = mecab_res.split("\t")[3].split("-")[0]
         self.base_form = mecab_res.split("\t")[2]
         self.moras = self.__get_moras()
+
+    @property
+    def is_content_word(self):
+        return self.part_of_speech in CONTENT_WORD_SET
 
     def __get_romanized_yomi_li(self):
         """読み仮名のローマ字表記を返す
