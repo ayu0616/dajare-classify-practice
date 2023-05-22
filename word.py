@@ -59,6 +59,7 @@ class Word:
 
     @property
     def is_content_word(self):
+        """内容語かどうか"""
         return self.part_of_speech in CONTENT_WORD_SET
 
     def __get_romanized_yomi_li(self):
