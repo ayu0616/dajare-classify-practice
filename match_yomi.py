@@ -9,7 +9,7 @@ def check(text: str) -> bool:
     res: str = tagger.parse(text)
     words = [Word(line) for line in res.splitlines() if line != "EOS"]
     yomi_sentence = "".join(map(lambda word: word.yomi, words))
-    seed_candidate_yomi = [word.yomi for word in words if word.part_of_speech in CONTENT_WORD_SET]
+    seed_candidate_yomi = [word.yomi for word in words if word.is_content_word]
     counters = [yomi_sentence.count(seed) for seed in seed_candidate_yomi]
     return max(counters) >= 2
 

@@ -1,6 +1,5 @@
 import MeCab
 
-from setting import CONTENT_WORD_SET
 from word import Word
 
 
@@ -16,7 +15,7 @@ class BagOfWords:
                 continue
             word = Word(line)
             # part_of_speech = line.split("\t")[3].split("-")[0]
-            if word.part_of_speech in CONTENT_WORD_SET:
+            if word.is_content_word:
                 self.word_set.add(word.base_form)
 
     def assign_id(self) -> None:
