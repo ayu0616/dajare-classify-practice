@@ -9,6 +9,12 @@ class BagOfWords:
         self.word_set: set[str] = set()
 
     def add(self, text: str) -> None:
+        """入力された文章をBOWに追加する
+
+        Parameters
+        ----------
+        - text: コーパスのテキストの一文
+        """
         res: str = self.tagger.parse(text)
         for line in res.splitlines():
             if line == "EOS" or line == "":
