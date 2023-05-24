@@ -51,6 +51,11 @@ class Mora:
 
 class Word:
     def __init__(self, mecab_res: str) -> None:
+        """
+        Parameters
+        ----------
+        mecab_res: mecabの出力結果で形態素ごとに改行されたものの一行
+        """
         self.surface = mecab_res.split("\t")[0]
         self.yomi = mecab_res.split("\t")[1]
         self.part_of_speech = mecab_res.split("\t")[3].split("-")[0]
