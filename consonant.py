@@ -35,6 +35,12 @@ class Corpus:
         self.n_pair = sum(self.n_pq.values())
 
     def p(self, p: str):
+        """子音ペアのうち、pが含まれるものの割合を計算する
+
+        Parameters
+        ----------
+        - p: 子音
+        """
         return len(list(filter(lambda x: p in x, self.n_pq.keys()))) / self.n_pair
 
     def calc_oer(self, p: str, q: str):
