@@ -6,11 +6,16 @@ from setting import CONTENT_WORD_SET
 
 
 class Mora:
-    __DOUBLE_CONSONANT__ = "Q"
-    __SYLLABIC_NASAL__ = "N"
-    __NULL__ = "*"
+    __DOUBLE_CONSONANT__ = "Q"  # 促音
+    __SYLLABIC_NASAL__ = "N"  # 撥音
+    __NULL__ = "*"  # 該当なし
 
     def __init__(self, yomi_roman: str):
+        """
+        Parameters
+        ----------
+        - yomi_roman: ローマ字表記の読み仮名で一つのモーラ
+        """
         if yomi_roman == "xtsu":
             self.consonant = self.__DOUBLE_CONSONANT__
             self.vowel = self.__NULL__
