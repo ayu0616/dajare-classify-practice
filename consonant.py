@@ -34,6 +34,7 @@ class Corpus:
                     self.n_pq[(p, q)] += 1
         self.n_pair = sum(self.n_pq.values())
 
+    @lru_cache(maxsize=None)
     def p(self, p: str):
         """子音ペアのうち、pが含まれるものの割合を計算する
 
@@ -43,6 +44,7 @@ class Corpus:
         """
         return len(list(filter(lambda x: p in x, self.n_pq.keys()))) / self.n_pair
 
+    @lru_cache(maxsize=None)
     def calc_oer(self, p: str, q: str):
         """O/E比を計算する
 
