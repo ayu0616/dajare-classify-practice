@@ -123,14 +123,3 @@ class Word:
 
     def __hash__(self) -> int:
         return super().__hash__()
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-
-    import MeCab
-
-    tagger = MeCab.Tagger("-Ochasen -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd")
-    res = tagger.parse("ショベルカーが走っているんだな")
-    yomi_li = [Word(line).moras for line in res.splitlines() if line != "EOS"]
-    pprint(yomi_li)
