@@ -15,6 +15,7 @@ class Corpus:
         ----------
         - text: コーパスのテキスト（各文は改行で分割）
         """
+        sentences = [[word for word in sentence if not word.is_symbol] for sentence in sentences]
         line_consonants = [[mora.consonant for word in words for mora in word.moras] for words in sentences]
         self.n_pq: defaultdict[tuple[str, str], int] = defaultdict(int)
         for cons in line_consonants:
@@ -68,6 +69,8 @@ class Corpus:
             words = [Word(res_word) for res_word in results if res_word != "EOS"]
         else:
             words = input
+
+        words = [word for word in words if not word.is_symbol]  # 記号を除外
         consonant_seq = [mora.consonant for word in words for mora in word.moras]
         consonant_cnt = 0
         for i, word in enumerate(words):
@@ -93,6 +96,8 @@ class Corpus:
             words = [Word(res_word) for res_word in results if res_word != "EOS"]
         else:
             words = input
+
+        words = [word for word in words if not word.is_symbol]  # 記号を除外
         consonant_seq = [mora.consonant for word in words for mora in word.moras]
         consonant_cnt = 0
         for i, word in enumerate(words):
