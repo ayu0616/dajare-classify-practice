@@ -50,26 +50,3 @@ class BagOfWords:
             except KeyError:
                 pass
         return vector
-
-
-if __name__ == "__main__":
-    bow = BagOfWords()
-    bow.add("私の部屋は綺麗な部屋とは程遠い")
-    bow.add("アルミ缶の上にある蜜柑がみっかんない")
-    bow.add("私はラーメンが好きです")
-    bow.add("富士山は日本一高い山です")
-    bow.add("私は富士山が好きです")
-    print(bow.word_set)
-
-    bow.assign_id()
-
-    vec = bow.get_vector("私は好きなラーメンを食べたいと思っています")
-    print(vec)
-
-    tagger = MeCab.Tagger("-Ochasen -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd")
-    res1 = tagger.parse("走る")
-    res2 = tagger.parse("走った")
-    w1 = Word(res1.splitlines()[0])
-    w2 = Word(res2.splitlines()[0])
-    print(w1, w2)
-    print(w1 == w2)
