@@ -1,4 +1,6 @@
 import MeCab
+import numpy as np
+from numpy.typing import NDArray
 
 from word import Word
 
@@ -26,14 +28,14 @@ class BagOfWords:
             self.word_to_id[word] = i
             self.id_to_word[i] = word
 
-    def get_vector(self, sentence: list[Word]) -> list[int]:
+    def get_vector(self, sentence: list[Word]) -> NDArray[np.uint]:
         """入力された文章のベクトルを返す
 
         Parameters
         ----------
         - text: テキストの一文
         """
-        vector: list[int] = [0] * len(self.word_set)
+        vector: NDArray[np.uint] = np.zeros(len(self.word_set), dtype=np.uint)
         for word in sentence:
             try:
                 vector[self.word_to_id[word.base_form]] += 1
