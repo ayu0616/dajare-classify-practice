@@ -78,10 +78,12 @@ class Corpus:
         else:
             words = input
         consonant_seq = [mora.consonant for word in words for mora in word.moras]
+        consonant_cnt = 0
         for i, word in enumerate(words):
+            consonant_cnt += len(word.moras)
             if not word.is_content_word:
                 continue
-            for j in range(len(consonant_seq) - len(word.moras)):
+            for j in range(consonant_cnt, len(consonant_seq) - len(word.moras)):
                 for k in range(len(word.moras)):
                     score += self.calc_oer(word.moras[k].consonant, consonant_seq[j + k])
         return score
