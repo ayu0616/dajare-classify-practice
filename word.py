@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+import MeCab
 import romkan
 
 from setting import CONTENT_WORD_SET
@@ -66,6 +67,11 @@ class Word:
         self.part_of_speech = mecab_res.split("\t")[3].split("-")[0]
         self.base_form = mecab_res.split("\t")[2]
         self.moras = self.__get_moras()
+
+    @classmethod
+    def from_sentence(cls, sentence: str, tagger: MeCab.Tagger) -> list["Word"]:
+        """文章からWordのリストを返す"""
+        return list(map(cls, tagger.parse(sentence).split("\n")[:-2]))
 
     @property
     def is_content_word(self):
