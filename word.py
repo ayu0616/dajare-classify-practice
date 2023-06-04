@@ -77,6 +77,11 @@ class Word:
     def is_content_word(self):
         """内容語かどうか"""
         return self.part_of_speech in CONTENT_WORD_SET
+    
+    @property
+    def is_symbol(self):
+        """記号かどうか"""
+        return self.part_of_speech == "記号"
 
     def __get_romanized_yomi_li(self):
         """読み仮名のローマ字表記を返す
