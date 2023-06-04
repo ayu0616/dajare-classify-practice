@@ -12,18 +12,3 @@ def check(text: str) -> bool:
     seed_candidate_yomi = [word.yomi for word in words if word.is_content_word]
     counters = [yomi_sentence.count(seed) for seed in seed_candidate_yomi]
     return max(counters) >= 2
-
-
-if __name__ == "__main__":
-    texts = """ゆで卵を茹でた孫
-    布団が吹っ飛んだ
-    お腹が空いた
-    今日と明日は京都に行きます
-    京都と奈良に行きたい
-    期待通りに行きたい
-    玉ねぎをたまたま買い忘れた
-    八百屋で玉ねぎをたまたま値切る
-    おやおや、八百屋に親が来た"""
-    for text in texts.splitlines():
-        t = text.strip()
-        print(t, "Yes" if check(t) else "No")
