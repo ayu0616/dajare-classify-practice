@@ -8,23 +8,14 @@ from word import Word
 
 
 class Corpus:
-    def __init__(self, text: str) -> None:
+    def __init__(self, sentences: list[list[Word]]) -> None:
         """コーパスを初期化する
 
         Parameters
         ----------
         - text: コーパスのテキスト（各文は改行で分割）
         """
-        tagger = MeCab.Tagger("-Ochasen -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd")
-        results: list[str] = [tagger.parse(line).splitlines() for line in text.splitlines()]
-        line_words: list[list[Word]] = []
-        for res_line in results:
-            line: list[Word] = []
-            for res_word in res_line:
-                if res_word != "EOS":
-                    line.append(Word(res_word))
-            line_words.append(line)
-        line_consonants = [[mora.consonant for word in words for mora in word.moras] for words in line_words]
+        line_consonants = [[mora.consonant for word in words for mora in word.moras] for words in sentences]
         self.n_pq: defaultdict[tuple[str, str], int] = defaultdict(int)
         for cons in line_consonants:
             for i in range(len(cons)):
