@@ -1,6 +1,6 @@
 import math
 from collections import defaultdict
-from typing import overload
+from functools import lru_cache
 
 import MeCab
 
@@ -88,35 +88,29 @@ class Corpus:
                     score += self.calc_oer(word.moras[k].consonant, consonant_seq[j + k])
         return score
 
+    def calc_max_score(self, input: str | list[Word]):
+        """子音の音韻類似度スコアを計算する（最大値を返す）
 
-if __name__ == "__main__":
-    t = """布団が吹っ飛んだ
-    タバコは体に悪い
-    あなたは私の妹ですか
-    スタバでコーヒーを飲む
-    あひるは鳴きます
-    とりあえず映画を見る
-    今日はとても暑いですね
-    エアコンをつけても涼しくなりません
-    私は昨日、図書館で面白い本を見つけました
-    タイトルは「未来の世界」です
-    彼はピアノがとても上手です
-    毎日練習しているそうです
-    あなたはどんな音楽が好きですか
-    私はジャズが好きです
-    明日は友達と映画に行きます
-    楽しみにしています
-    """
-    tagger = MeCab.Tagger("-Ochasen -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd")
-    corpus = Corpus(t)
-    test = """布団が吹っ飛んだ
-    タバコは体に悪い
-    あなたは私の妹ですか
-    アルミ缶のリサイクルは大切です
-    アルミ缶の上にある蜜柑がみっかんない
-    深い海は不快だ
-    トマトが野菜かどうかは議論があるところだが私は野菜だと思う"""
-    for te in test.splitlines():
-        te = te.strip()
-        print(te, end=" ")
-        print(corpus.calc_score(te))
+        Parameters
+        ----------
+        - input: `文の単語リスト` または `一文の文字列`
+        """
+        score = 0.0
+        if isinstance(input, str):
+            tagger = MeCab.Tagger("-Ochasen -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd")
+            results: list[str] = tagger.parse(input).splitlines()
+            words = [Word(res_word) for res_word in results if res_word != "EOS"]
+        else:
+            words = input
+        consonant_seq = [mora.consonant for word in words for mora in word.moras]
+        consonant_cnt = 0
+        for i, word in enumerate(words):
+            consonant_cnt += len(word.moras)
+            if not word.is_content_word:
+                continue
+            for j in range(consonant_cnt, len(consonant_seq) - len(word.moras)):
+                tmp_s = 0.0
+                for k in range(len(word.moras)):
+                    tmp_s += self.calc_oer(word.moras[k].consonant, consonant_seq[j + k])
+                score = max(score, tmp_s / len(word.moras))
+        return score
