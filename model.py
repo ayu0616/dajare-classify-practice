@@ -36,7 +36,7 @@ class DajareClassifier(SVC):
         - sentences: 文章のリスト
         """
         v = self.bow.get_vector(sentences)  # 次元数が大きいベクトル
-        pca = PCA(n_components=300)
+        pca = PCA(n_components=20)
         pca.fit(v)
         return pca.transform(v)  # 次元数が小さいベクトル
 
