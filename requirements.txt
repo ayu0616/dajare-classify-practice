@@ -1,2 +1,4 @@
 mecab-python
+unidic-lite
 romkan
+python-dotenv
