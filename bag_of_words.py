@@ -28,17 +28,26 @@ class BagOfWords:
             self.word_to_id[word] = i
             self.id_to_word[i] = word
 
-    def get_vector(self, sentence: list[Word]) -> NDArray[np.uint]:
+    def get_vector(self, sentence: list[Word] | list[list[Word]]) -> NDArray[np.uint]:
         """入力された文章のベクトルを返す
 
         Parameters
         ----------
         - text: テキストの一文
         """
-        vector: NDArray[np.uint] = np.zeros(len(self.word_set), dtype=np.uint)
+        if isinstance(sentence[0], list):
+            vector1: NDArray[np.uint] = np.zeros((len(sentence), len(self.word_set)), dtype=np.uint)
+            for i, sentence_i in enumerate(sentence):
+                for word in sentence_i:
+                    try:
+                        vector1[i, self.word_to_id[word.base_form]] += 1
+                    except KeyError:
+                        pass
+            return vector1
+        vector2: NDArray[np.uint] = np.zeros(len(self.word_set), dtype=np.uint)
         for word in sentence:
             try:
-                vector[self.word_to_id[word.base_form]] += 1
+                vector2[self.word_to_id[word.base_form]] += 1
             except KeyError:
                 pass
-        return vector
+        return vector2
