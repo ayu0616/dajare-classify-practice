@@ -20,11 +20,11 @@ GitHub に良さげなリポジトリがあったので、それを使用する�
 
 調べてみた
 
-@import "./consonant_deg1.png"
-@import "./consonant_deg2.png"
+![画像](./consonant_deg1.png)
+![画像](./consonant_deg2.png)
 
 予想通り文章の長さの 2 乗に比例する
 
 ## 最大値をとる計算方法
 
-@import "./consonant_max.png"
+![画像](./consonant_max.png)
