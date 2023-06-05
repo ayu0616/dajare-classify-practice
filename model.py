@@ -7,13 +7,14 @@ from sklearn.svm import SVC
 import match_yomi
 from bag_of_words import BagOfWords
 from consonant import Corpus
+from setting import DIC_DIR
 from word import Word
 
 
 class DajareClassifier(SVC):
     def __init__(self):
         self.bow = BagOfWords()
-        self.tagger = MeCab.Tagger("-Ochasen -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd")
+        self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
 
     def set_bow(self, X: list[list[Word]]):
         """BoWを設定する

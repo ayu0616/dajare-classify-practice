@@ -4,6 +4,7 @@ from functools import lru_cache
 
 import MeCab
 
+from setting import DIC_DIR
 from word import Word
 
 
@@ -64,7 +65,7 @@ class Corpus:
         """
         score = 0.0
         if isinstance(input, str):
-            tagger = MeCab.Tagger("-Ochasen -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd")
+            tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
             results: list[str] = tagger.parse(input).splitlines()
             words = [Word(res_word) for res_word in results if res_word != "EOS"]
         else:
@@ -91,7 +92,7 @@ class Corpus:
         """
         score = 0.0
         if isinstance(input, str):
-            tagger = MeCab.Tagger("-Ochasen -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd")
+            tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
             results: list[str] = tagger.parse(input).splitlines()
             words = [Word(res_word) for res_word in results if res_word != "EOS"]
         else:
