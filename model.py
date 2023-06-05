@@ -16,6 +16,8 @@ class DajareClassifier(SVC):
         super().__init__()
         self.bow = BagOfWords()
         self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
+        self.bow_reduction_rate = 1.0
+        self.pca: None | PCA = None
 
     def set_bow(self, X: list[list[Word]]):
         """BoWを設定する
@@ -29,18 +31,6 @@ class DajareClassifier(SVC):
                 self.bow.add(word)
         self.bow.assign_id()
 
-    def get_bow_vector(self, sentences: list[list[Word]]):
-        """BoWのベクトルを取得する
-
-        Parameters
-        ----------
-        - sentences: 文章のリスト
-        """
-        v = self.bow.get_vector(sentences)  # 次元数が大きいベクトル
-        pca = PCA(n_components=20)
-        pca.fit(v)
-        return pca.transform(v)  # 次元数が小さいベクトル
-
     def fit(self, X: list[str], y: NDArray[np.uint]):
         """学習する
 
@@ -53,13 +43,15 @@ class DajareClassifier(SVC):
         """
         X_words = list(map(lambda Xi: Word.from_sentence(Xi, self.tagger), X))
         self.set_bow(X_words)
-        bow = self.get_bow_vector(X_words)
+        bow = self.bow.get_vector(X_words)
+        if self.bow_reduction_rate < 1.0:
+            self.pca = PCA(n_components=int(bow.shape[1] * self.bow_reduction_rate))
+            bow = self.pca.fit_transform(bow)
         match_yomi_res_li = list(map(match_yomi.check, X_words))
         match_yomi_res = np.array(match_yomi_res_li, dtype=np.uint)
 
         self.corpus = Corpus(X_words)
-        consonant_score = np.array(list(map(self.corpus.calc_score, X_words)), dtype=np.uint)
-
+        consonant_score = np.array(list(map(self.corpus.calc_max_score, X_words)), dtype=np.uint)
         X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_score.reshape(-1, 1)], axis=1)
 
         super().fit(X_in, y)
@@ -72,8 +64,10 @@ class DajareClassifier(SVC):
         - X: 予測データのリスト（文字列で1文）
         """
         X_words = list(map(lambda Xi: Word.from_sentence(Xi, self.tagger), X))
-        bow = np.array(list(map(self.get_bow_vector, X_words)))
+        bow = self.bow.get_vector(X_words)
+        if self.pca is not None:
+            bow = self.pca.transform(bow)
         match_yomi_res = np.array(list(map(match_yomi.check, X_words)), dtype=np.uint)
-        consonant_score = np.array(list(map(self.corpus.calc_score, X_words)), dtype=np.uint)
+        consonant_score = np.array(list(map(self.corpus.calc_max_score, X_words)), dtype=np.uint)
         X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_score.reshape(-1, 1)], axis=1)
         return super().predict(X_in)
