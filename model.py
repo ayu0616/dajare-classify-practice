@@ -13,6 +13,7 @@ from word import Word
 
 class DajareClassifier(SVC):
     def __init__(self):
+        super().__init__()
         self.bow = BagOfWords()
         self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
 
