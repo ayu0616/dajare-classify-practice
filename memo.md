@@ -20,11 +20,11 @@ GitHub に良さげなリポジトリがあったので、それを使用する�
 
 調べてみた
 
-![画像](imgaes/consonant_deg1.png)
-![画像](imgaes/consonant_deg2.png)
+![画像](images/consonant_deg1.png)
+![画像](images/consonant_deg2.png)
 
 予想通り文章の長さの 2 乗に比例する
 
 ## 最大値をとる計算方法
 
-![画像](imgaes/consonant_max.png)
+![画像](images/consonant_max.png)
