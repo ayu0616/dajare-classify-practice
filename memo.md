@@ -28,19 +28,3 @@ GitHub に良さげなリポジトリがあったので、それを使用する�
 ## 最大値をとる計算方法
 
 @import "./consonant_max.png"
-
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap');
-
-  body{
-    font-family: 'BIZ UDPGothic', sans-serif;
-  }
-
-  /* th{
-    display: none;
-  }
-
-  img {
-    max-height: 400px;
-  } */
-</style>
