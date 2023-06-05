@@ -1,3 +1,5 @@
+from typing import Literal
+
 import MeCab
 import numpy as np
 from numpy.typing import NDArray
@@ -12,8 +14,8 @@ from word import Word
 
 
 class DajareClassifier(SVC):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, C: float = 1.0, gamma: float | Literal["scale", "auto"] = "scale"):
+        super().__init__(C=C, gamma=gamma)
         self.bow = BagOfWords()
         self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
         self.bow_reduction_rate = 1.0
