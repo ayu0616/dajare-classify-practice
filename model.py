@@ -10,7 +10,7 @@ import match_yomi
 from bag_of_words import BagOfWords
 from consonant import Corpus
 from setting import DIC_DIR
-from word import Word
+from word import Sentence, Word
 
 
 class DajareClassifier(SVC):
@@ -29,7 +29,7 @@ class DajareClassifier(SVC):
         self.bow_reduction_rate = bow_reduction_rate
         self.pca: None | PCA = None
 
-    def set_bow(self, X: list[list[Word]]):
+    def set_bow(self, X: list[Sentence]):
         """BoWを設定する
 
         Parameters
