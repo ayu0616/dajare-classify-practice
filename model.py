@@ -14,11 +14,11 @@ from word import Word
 
 
 class DajareClassifier(SVC):
-    def __init__(self, C: float = 1.0, gamma: float | Literal["scale", "auto"] = "scale"):
+    def __init__(self, C: float = 1.0, gamma: float | Literal["scale", "auto"] = "scale", bow_reduction_rate: float = 1.0):
         super().__init__(C=C, gamma=gamma)
         self.bow = BagOfWords()
         self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
-        self.bow_reduction_rate = 1.0
+        self.bow_reduction_rate = bow_reduction_rate
         self.pca: None | PCA = None
 
     def set_bow(self, X: list[list[Word]]):
