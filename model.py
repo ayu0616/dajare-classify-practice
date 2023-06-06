@@ -15,6 +15,14 @@ from word import Word
 
 class DajareClassifier(SVC):
     def __init__(self, C: float = 1.0, gamma: float | Literal["scale", "auto"] = "scale", bow_reduction_rate: float = 1.0):
+        """駄洒落判定器
+
+        Parameters
+        ----------
+        - C: SVMのパラメータ
+        - gamma: SVMのパラメータ
+        - bow_reduction_rate: BoWの次元削減率
+        """
         super().__init__(C=C, gamma=gamma)
         self.bow = BagOfWords()
         self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
