@@ -5,18 +5,18 @@ from functools import lru_cache
 import MeCab
 
 from setting import DIC_DIR
-from word import Word
+from word import Sentence, Word
 
 
 class Corpus:
-    def __init__(self, sentences: list[list[Word]]) -> None:
+    def __init__(self, sentences: list[Sentence]) -> None:
         """コーパスを初期化する
 
         Parameters
         ----------
         - text: コーパスのテキスト（各文は改行で分割）
         """
-        sentences = [[word for word in sentence if not word.is_symbol] for sentence in sentences]
+        sentences = [sentence.removed_symbol for sentence in sentences]
         line_consonants = [[mora.consonant for word in words for mora in word.moras] for words in sentences]
         self.n_pq: defaultdict[tuple[str, str], int] = defaultdict(int)
         for cons in line_consonants:
@@ -56,25 +56,25 @@ class Corpus:
         else:
             return math.log(oer) + constant
 
-    def calc_score(self, input: str | list[Word]):
+    def calc_score(self, sentence: str | Sentence):
         """子音の音韻類似度スコアを計算する
 
         Parameters
         ----------
-        - input: `文の単語リスト` または `一文の文字列`
+        - sentence: `文の単語リスト` または `一文の文字列`
         """
         score = 0.0
-        if isinstance(input, str):
+        if isinstance(sentence, str):
             tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
-            results: list[str] = tagger.parse(input).splitlines()
-            words = [Word(res_word) for res_word in results if res_word != "EOS"]
+            results: list[str] = tagger.parse(sentence).splitlines()
+            sentence1 = Sentence([Word(res_word) for res_word in results if res_word != "EOS"])
         else:
-            words = input
+            sentence1 = sentence
 
-        words = [word for word in words if not word.is_symbol]  # 記号を除外
-        consonant_seq = [mora.consonant for word in words for mora in word.moras]
+        sentence1 = sentence1.removed_symbol  # 記号を除外
+        consonant_seq = [mora.consonant for word in sentence1 for mora in word.moras]
         consonant_cnt = 0
-        for i, word in enumerate(words):
+        for word in sentence1:
             consonant_cnt += len(word.moras)
             if not word.is_content_word:
                 continue
@@ -83,25 +83,25 @@ class Corpus:
                     score += self.calc_oer(word.moras[k].consonant, consonant_seq[j + k])
         return score
 
-    def calc_max_score(self, input: str | list[Word]):
+    def calc_max_score(self, sentence: str | Sentence):
         """子音の音韻類似度スコアを計算する（最大値を返す）
 
         Parameters
         ----------
-        - input: `文の単語リスト` または `一文の文字列`
+        - sentence: `文の単語リスト` または `一文の文字列`
         """
         score = 0.0
-        if isinstance(input, str):
+        if isinstance(sentence, str):
             tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
             results: list[str] = tagger.parse(input).splitlines()
-            words = [Word(res_word) for res_word in results if res_word != "EOS"]
+            sentence1 = Sentence([Word(res_word) for res_word in results if res_word != "EOS"])
         else:
-            words = input
+            sentence1 = sentence
 
-        words = [word for word in words if not word.is_symbol]  # 記号を除外
-        consonant_seq = [mora.consonant for word in words for mora in word.moras]
+        sentence1 = sentence1.removed_symbol  # 記号を除外
+        consonant_seq = [mora.consonant for word in sentence1 for mora in word.moras]
         consonant_cnt = 0
-        for i, word in enumerate(words):
+        for i, word in enumerate(sentence1):
             consonant_cnt += len(word.moras)
             if not word.is_content_word:
                 continue
@@ -109,5 +109,5 @@ class Corpus:
                 tmp_s = 0.0
                 for k in range(len(word.moras)):
                     tmp_s += self.calc_oer(word.moras[k].consonant, consonant_seq[j + k])
-                score = max(score, tmp_s / len(word.moras))
+                score = max(score, tmp_s / sentence1.char_len)
         return score
