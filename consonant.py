@@ -14,7 +14,7 @@ class Corpus:
 
         Parameters
         ----------
-        - text: コーパスのテキスト（各文は改行で分割）
+        - sentences: `文の単語リスト` のリスト
         """
         sentences = [sentence.removed_symbol for sentence in sentences]
         line_consonants = [[mora.consonant for word in words for mora in word.moras] for words in sentences]
