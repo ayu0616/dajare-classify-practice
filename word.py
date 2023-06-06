@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Iterable
 
 import MeCab
 import romkan
@@ -77,7 +78,7 @@ class Word:
     def is_content_word(self):
         """内容語かどうか"""
         return self.part_of_speech in CONTENT_WORD_SET
-    
+
     @property
     def is_symbol(self):
         """記号かどうか"""
@@ -128,3 +129,18 @@ class Word:
 
     def __hash__(self) -> int:
         return super().__hash__()
+
+
+class Sentence(list[Word]):
+    def __init__(self, words: Iterable[Word]) -> None:
+        super().__init__(words)
+        self.word_len = len(self)  # 単語数
+        self.char_len = sum([len(word.surface) for word in self if not word.is_symbol])  # 記号以外の文字数
+
+    @property
+    def removed_symbol(self):
+        """記号を除いた単語のリスト"""
+        return [word for word in self if not word.is_symbol]
+
+    def __repr__(self) -> str:
+        return "".join([word.surface for word in self])
