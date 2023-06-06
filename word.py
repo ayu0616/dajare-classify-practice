@@ -137,10 +137,14 @@ class Sentence(list[Word]):
         self.word_len = len(self)  # 単語数
         self.char_len = sum([len(word.surface) for word in self if not word.is_symbol])  # 記号以外の文字数
 
+    @classmethod
+    def from_words(cls, words: Iterable[Word]) -> "Sentence":
+        return cls(words)
+
     @property
     def removed_symbol(self):
         """記号を除いた単語のリスト"""
-        return [word for word in self if not word.is_symbol]
+        return self.from_words([word for word in self if not word.is_symbol])
 
     def __repr__(self) -> str:
         return "".join([word.surface for word in self])
