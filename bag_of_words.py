@@ -3,7 +3,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from setting import DIC_DIR
-from word import Word
+from word import Sentence, Word
 
 
 class BagOfWords:
@@ -29,14 +29,14 @@ class BagOfWords:
             self.word_to_id[word] = i
             self.id_to_word[i] = word
 
-    def get_vector(self, sentence: list[Word] | list[list[Word]]) -> NDArray[np.uint]:
+    def get_vector(self, sentence: Sentence | list[Sentence]) -> NDArray[np.uint]:
         """入力された文章のベクトルを返す
 
         Parameters
         ----------
         - text: テキストの一文
         """
-        if isinstance(sentence[0], list):
+        if type(sentence) is list:
             vector1: NDArray[np.uint] = np.zeros((len(sentence), len(self.word_set)), dtype=np.uint)
             for i, sentence_i in enumerate(sentence):
                 for word in sentence_i:
@@ -45,10 +45,13 @@ class BagOfWords:
                     except KeyError:
                         pass
             return vector1
-        vector2: NDArray[np.uint] = np.zeros(len(self.word_set), dtype=np.uint)
-        for word in sentence:
-            try:
-                vector2[self.word_to_id[word.base_form]] += 1
-            except KeyError:
-                pass
-        return vector2
+        elif type(sentence) is Sentence:
+            vector2: NDArray[np.uint] = np.zeros(len(self.word_set), dtype=np.uint)
+            for word in sentence:
+                try:
+                    vector2[self.word_to_id[word.base_form]] += 1
+                except KeyError:
+                    pass
+            return vector2
+        else:
+            raise TypeError("sentence must be Sentence or list[Sentence]")
