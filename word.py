@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from functools import lru_cache
 from typing import Iterable
 
@@ -148,3 +149,6 @@ class Sentence(list[Word]):
 
     def __repr__(self) -> str:
         return "".join([word.surface for word in self])
+
+    def __iter__(self) -> Iterator[Word]:
+        return super().__iter__()
