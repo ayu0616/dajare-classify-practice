@@ -4,6 +4,7 @@ import MeCab
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
 import match_yomi
@@ -28,6 +29,7 @@ class DajareClassifier(SVC):
         self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
         self.bow_reduction_rate = bow_reduction_rate
         self.pca: None | PCA = None
+        self.standard_scaler = StandardScaler()
 
     def set_bow(self, X: list[Sentence]):
         """BoWを設定する
@@ -63,6 +65,7 @@ class DajareClassifier(SVC):
         self.corpus = Corpus(X_words)
         consonant_score = np.array(list(map(self.corpus.calc_max_score, X_words)), dtype=np.uint)
         X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_score.reshape(-1, 1)], axis=1)
+        X_in = self.standard_scaler.fit_transform(X_in)
 
         super().fit(X_in, y)
 
@@ -80,4 +83,5 @@ class DajareClassifier(SVC):
         match_yomi_res = np.array(list(map(match_yomi.check, X_words)), dtype=np.uint)
         consonant_score = np.array(list(map(self.corpus.calc_max_score, X_words)), dtype=np.uint)
         X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_score.reshape(-1, 1)], axis=1)
+        X_in = self.standard_scaler.transform(X_in)
         return super().predict(X_in)
