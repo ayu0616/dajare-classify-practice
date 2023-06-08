@@ -93,7 +93,7 @@ class Corpus:
         score = 0.0
         if isinstance(sentence, str):
             tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
-            results: list[str] = tagger.parse(input).splitlines()
+            results: list[str] = tagger.parse(sentence).splitlines()
             sentence1 = Sentence([Word(res_word) for res_word in results if res_word != "EOS"])
         else:
             sentence1 = sentence
