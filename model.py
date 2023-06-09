@@ -64,7 +64,11 @@ class DajareClassifier(SVC):
 
         self.corpus = Corpus(X_words)
         consonant_score = np.array(list(map(self.corpus.calc_max_score, X_words)), dtype=np.uint)
-        X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_score.reshape(-1, 1)], axis=1)
+
+        self.lr.fit(consonant_score.reshape(-1, 1), (1 + y) // 2)
+        consonant_bin = self.lr.predict(consonant_score.reshape(-1, 1))
+
+        X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_bin.reshape(-1, 1)], axis=1)
         X_in = self.standard_scaler.fit_transform(X_in)
 
         super().fit(X_in, y)
@@ -82,6 +86,7 @@ class DajareClassifier(SVC):
             bow = self.pca.transform(bow)
         match_yomi_res = np.array(list(map(match_yomi.check, X_words)), dtype=np.uint)
         consonant_score = np.array(list(map(self.corpus.calc_max_score, X_words)), dtype=np.uint)
-        X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_score.reshape(-1, 1)], axis=1)
+        consonant_bin = self.lr.predict(consonant_score.reshape(-1, 1))
+        X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_bin.reshape(-1, 1)], axis=1)
         X_in = self.standard_scaler.transform(X_in)
         return super().predict(X_in)
