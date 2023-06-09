@@ -22,8 +22,7 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
 
         Parameters
         ----------
-        - C: SVMのパラメータ
-        - gamma: SVMのパラメータ
+        - estimator: 分類器
         - bow_reduction_rate: BoWの次元削減率
         """
         self.estimator = estimator
