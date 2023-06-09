@@ -41,7 +41,7 @@ class BagOfWords:
             for i, sentence_i in enumerate(sentence):
                 for word in sentence_i:
                     try:
-                        vector1[i, self.word_to_id[word.base_form]] += 1
+                        vector1[i, self.word_to_id[word.base_form]] = 1
                     except KeyError:
                         pass
             return vector1
@@ -49,7 +49,7 @@ class BagOfWords:
             vector2: NDArray[np.uint] = np.zeros(len(self.word_set), dtype=np.uint)
             for word in sentence:
                 try:
-                    vector2[self.word_to_id[word.base_form]] += 1
+                    vector2[self.word_to_id[word.base_form]] = 1
                 except KeyError:
                     pass
             return vector2
