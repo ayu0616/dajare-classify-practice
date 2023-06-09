@@ -3,6 +3,7 @@ from typing import Literal
 import MeCab
 import numpy as np
 from numpy.typing import NDArray
+from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
@@ -12,10 +13,11 @@ from bag_of_words import BagOfWords
 from consonant import Corpus
 from setting import DIC_DIR
 from word import Sentence, Word
+from sklearn.linear_model import LinearRegression
 
 
-class DajareClassifier(SVC):
-    def __init__(self, C: float = 1.0, gamma: float | Literal["scale", "auto"] = "scale", bow_reduction_rate: float = 1.0):
+class DajareClassifier(BaseEstimator, ClassifierMixin):
+    def __init__(self, estimator, bow_reduction_rate: float = 1.0):
         """駄洒落判定器
 
         Parameters
@@ -24,12 +26,13 @@ class DajareClassifier(SVC):
         - gamma: SVMのパラメータ
         - bow_reduction_rate: BoWの次元削減率
         """
-        super().__init__(C=C, gamma=gamma)
+        self.estimator = estimator
         self.bow = BagOfWords()
         self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
         self.bow_reduction_rate = bow_reduction_rate
         self.pca: None | PCA = None
         self.standard_scaler = StandardScaler()
+        self.lr = LinearRegression()
 
     def set_bow(self, X: list[Sentence]):
         """BoWを設定する
@@ -71,7 +74,7 @@ class DajareClassifier(SVC):
         X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_bin.reshape(-1, 1)], axis=1)
         X_in = self.standard_scaler.fit_transform(X_in)
 
-        super().fit(X_in, y)
+        self.estimator.fit(X_in, y)
 
     def predict(self, X: list[str]) -> NDArray[np.uint]:
         """予測する
@@ -89,4 +92,4 @@ class DajareClassifier(SVC):
         consonant_bin = self.lr.predict(consonant_score.reshape(-1, 1))
         X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_bin.reshape(-1, 1)], axis=1)
         X_in = self.standard_scaler.transform(X_in)
-        return super().predict(X_in)
+        return self.estimator.predict(X_in)
