@@ -36,7 +36,7 @@ class BagOfWords:
         ----------
         - text: テキストの一文
         """
-        if type(sentence) is list:
+        if type(sentence) is list and type(sentence[0]) is Sentence:
             vector1: NDArray[np.uint] = np.zeros((len(sentence), len(self.word_set)), dtype=np.uint)
             for i, sentence_i in enumerate(sentence):
                 for word in sentence_i:
