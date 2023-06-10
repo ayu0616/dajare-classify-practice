@@ -29,19 +29,20 @@ class BagOfWords:
             self.word_to_id[word] = i
             self.id_to_word[i] = word
 
-    def get_vector(self, sentence: Sentence | list[Sentence]) -> NDArray[np.uint]:
+    def get_vector(self, sentence: Sentence | list[Sentence], count_duplicate: bool = False) -> NDArray[np.uint]:
         """入力された文章のベクトルを返す
 
         Parameters
         ----------
         - text: テキストの一文
+        - count_duplicate: 重複をカウントするかどうか
         """
         if type(sentence) is list and type(sentence[0]) is Sentence:
             vector1: NDArray[np.uint] = np.zeros((len(sentence), len(self.word_set)), dtype=np.uint)
             for i, sentence_i in enumerate(sentence):
                 for word in sentence_i:
                     try:
-                        vector1[i, self.word_to_id[word.base_form]] = 1
+                        vector1[i, self.word_to_id[word.base_form]] = 1 + (vector1[i, self.word_to_id[word.base_form]] * count_duplicate)
                     except KeyError:
                         pass
             return vector1
@@ -49,7 +50,7 @@ class BagOfWords:
             vector2: NDArray[np.uint] = np.zeros(len(self.word_set), dtype=np.uint)
             for word in sentence:
                 try:
-                    vector2[self.word_to_id[word.base_form]] = 1
+                    vector2[self.word_to_id[word.base_form]] = 1 + (vector2[self.word_to_id[word.base_form]] * count_duplicate)
                 except KeyError:
                     pass
             return vector2
