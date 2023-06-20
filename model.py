@@ -55,7 +55,7 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
             - 1: 駄洒落
             - -1: 駄洒落でない
         """
-        X_words = list(map(Word.from_sentence, X))
+        X_words = list(map(Sentence.from_sentence, X))
         self.set_bow(X_words)
         bow = self.bow.get_vector(X_words)
         if self.bow_reduction_rate < 1.0:
@@ -82,7 +82,7 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
         ----------
         - X: 予測データのリスト（文字列で1文）
         """
-        X_words = list(map(Word.from_sentence, X))
+        X_words = list(map(Sentence.from_sentence, X))
         bow = self.bow.get_vector(X_words)
         if self.pca is not None:
             bow = self.pca.transform(bow)
