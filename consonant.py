@@ -2,10 +2,7 @@ import math
 from collections import defaultdict
 from functools import lru_cache
 
-import MeCab
-
-from setting import DIC_DIR
-from word import Sentence, Word
+from word import Sentence
 
 
 class Corpus:
@@ -56,7 +53,7 @@ class Corpus:
         else:
             return math.log(oer) + constant
 
-    def calc_score(self, sentence: str | Sentence):
+    def calc_score(self, sentence: Sentence):
         """子音の音韻類似度スコアを計算する
 
         Parameters
@@ -64,17 +61,11 @@ class Corpus:
         - sentence: `文の単語リスト` または `一文の文字列`
         """
         score = 0.0
-        if isinstance(sentence, str):
-            tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
-            results: list[str] = tagger.parse(sentence).splitlines()
-            sentence1 = Sentence([Word(res_word) for res_word in results if res_word != "EOS"])
-        else:
-            sentence1 = sentence
 
-        sentence1 = sentence1.removed_symbol  # 記号を除外
-        consonant_seq = [mora.consonant for word in sentence1 for mora in word.moras]
+        sentence = sentence.removed_symbol  # 記号を除外
+        consonant_seq = [mora.consonant for word in sentence for mora in word.moras]
         consonant_cnt = 0
-        for word in sentence1:
+        for word in sentence:
             consonant_cnt += len(word.moras)
             if not word.is_content_word:
                 continue
@@ -83,7 +74,7 @@ class Corpus:
                     score += self.calc_oer(word.moras[k].consonant, consonant_seq[j + k])
         return score
 
-    def calc_max_score(self, sentence: str | Sentence):
+    def calc_max_score(self, sentence: Sentence):
         """子音の音韻類似度スコアを計算する（最大値を返す）
 
         Parameters
@@ -91,17 +82,10 @@ class Corpus:
         - sentence: `文の単語リスト` または `一文の文字列`
         """
         score = 0.0
-        if isinstance(sentence, str):
-            tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
-            results: list[str] = tagger.parse(sentence).splitlines()
-            sentence1 = Sentence([Word(res_word) for res_word in results if res_word != "EOS"])
-        else:
-            sentence1 = sentence
-
-        sentence1 = sentence1.removed_symbol  # 記号を除外
-        consonant_seq = [mora.consonant for word in sentence1 for mora in word.moras]
+        sentence = sentence.removed_symbol  # 記号を除外
+        consonant_seq = [mora.consonant for word in sentence for mora in word.moras]
         consonant_cnt = 0
-        for i, word in enumerate(sentence1):
+        for i, word in enumerate(sentence):
             consonant_cnt += len(word.moras)
             if not word.is_content_word:
                 continue
@@ -109,5 +93,5 @@ class Corpus:
                 tmp_s = 0.0
                 for k in range(len(word.moras)):
                     tmp_s += self.calc_oer(word.moras[k].consonant, consonant_seq[j + k])
-                score = max(score, tmp_s / sentence1.char_len)
+                score = max(score, tmp_s / sentence.char_len)
         return score
