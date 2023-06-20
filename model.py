@@ -17,7 +17,7 @@ from sklearn.linear_model import LinearRegression
 
 
 class DajareClassifier(BaseEstimator, ClassifierMixin):
-    def __init__(self, estimator, bow_reduction_rate: float = 1.0):
+    def __init__(self, estimator_class, bow_reduction_rate: float = 1.0, **estimator_params):
         """駄洒落判定器
 
         Parameters
@@ -25,7 +25,7 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
         - estimator: 分類器
         - bow_reduction_rate: BoWの次元削減率
         """
-        self.estimator = estimator
+        self.estimator = estimator_class(**estimator_params)
         self.bow = BagOfWords()
         self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
         self.bow_reduction_rate = bow_reduction_rate
