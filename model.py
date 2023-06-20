@@ -1,19 +1,14 @@
-from typing import Literal
-
-import MeCab
 import numpy as np
 from numpy.typing import NDArray
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
 
 import match_yomi
 from bag_of_words import BagOfWords
 from consonant import Corpus
-from setting import DIC_DIR
-from word import Sentence, Word
+from word import Sentence
 
 
 class DajareClassifier(BaseEstimator, ClassifierMixin):
@@ -27,7 +22,6 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
         """
         self.estimator = estimator_class(**estimator_params)
         self.bow = BagOfWords()
-        self.tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
         self.bow_reduction_rate = bow_reduction_rate
         self.pca: None | PCA = None
         self.standard_scaler = StandardScaler()
