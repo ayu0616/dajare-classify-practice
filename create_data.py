@@ -53,8 +53,8 @@ normal_sentences = [s for s in normal_sentences if is_valid_data(s)]
 normal_sentences = list(set(normal_sentences))  # 重複を削除
 
 tagger = MeCab.Tagger(f"-Ochasen -d {DIC_DIR}")
-tagged_dajare = tagger.parse("\n".join(dajare_sentences))
-tagged_normal = tagger.parse("\n".join(normal_sentences))
+tagged_dajare = "".join([tagger.parse(s) for s in dajare_sentences])
+tagged_normal = "".join([tagger.parse(s) for s in normal_sentences])
 
 with open(os.path.join(OUTPUT_DIR, "dajare.txt"), "w") as f:
     f.write(tagged_dajare)
