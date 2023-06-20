@@ -141,6 +141,10 @@ class Sentence(list[Word]):
         if lines[-1] == "EOS":
             lines.pop()
         return cls([Word(line) for line in lines])
+    
+    @classmethod
+    def from_sentences(cls, tagged_sentences: Iterable[str]) -> list["Sentence"]:
+        return list(map(cls.from_sentence, tagged_sentences))
 
     @property
     def removed_symbol(self):
