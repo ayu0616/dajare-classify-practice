@@ -5,6 +5,8 @@
 GitHub に良さげなリポジトリがあったので、それを使用する。
 (https://github.com/vaaaaanquish/dajare-python)
 
+それにプラスしてhttp://with2.net/dajakuraからもデータを取得した。
+
 ## 通常の文
 
 論文には YACIS コーパスを使用したと書いているので、一旦それを検索してみる
