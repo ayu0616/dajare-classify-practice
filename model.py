@@ -73,7 +73,7 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
         X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_bin.reshape(-1, 1)], axis=1)
         X_in = self.standard_scaler.fit_transform(X_in)
 
-        self.estimator.fit(X_in, y)
+        return self.estimator.fit(X_in, y)
 
     def predict(self, X: list[str]) -> NDArray[np.uint]:
         """予測する
