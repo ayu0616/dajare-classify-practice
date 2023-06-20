@@ -1,8 +1,6 @@
 from collections.abc import Iterator
-from functools import lru_cache
 from typing import Iterable
 
-import MeCab
 import romkan
 
 from setting import CONTENT_WORD_SET
@@ -71,9 +69,12 @@ class Word:
         self.moras = self.__get_moras()
 
     @classmethod
-    def from_sentence(cls, sentence: str, tagger: MeCab.Tagger) -> "Sentence":
+    def from_sentence(cls, tagged_sentence: str) -> "Sentence":
         """文章からWordのリストを返す"""
-        return Sentence(map(cls, tagger.parse(sentence).split("\n")[:-2]))
+        lines = tagged_sentence.split("\n")
+        if lines[-1] == "EOS":
+            lines = lines[:-1]
+        return Sentence(map(cls, lines))
 
     @property
     def is_content_word(self):

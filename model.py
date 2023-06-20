@@ -5,6 +5,7 @@ import numpy as np
 from numpy.typing import NDArray
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.decomposition import PCA
+from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
@@ -13,7 +14,6 @@ from bag_of_words import BagOfWords
 from consonant import Corpus
 from setting import DIC_DIR
 from word import Sentence, Word
-from sklearn.linear_model import LinearRegression
 
 
 class DajareClassifier(BaseEstimator, ClassifierMixin):
@@ -55,7 +55,7 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
             - 1: 駄洒落
             - -1: 駄洒落でない
         """
-        X_words = list(map(lambda Xi: Word.from_sentence(Xi, self.tagger), X))
+        X_words = list(map(Word.from_sentence, X))
         self.set_bow(X_words)
         bow = self.bow.get_vector(X_words)
         if self.bow_reduction_rate < 1.0:
@@ -82,7 +82,7 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
         ----------
         - X: 予測データのリスト（文字列で1文）
         """
-        X_words = list(map(lambda Xi: Word.from_sentence(Xi, self.tagger), X))
+        X_words = list(map(Word.from_sentence, X))
         bow = self.bow.get_vector(X_words)
         if self.pca is not None:
             bow = self.pca.transform(bow)
