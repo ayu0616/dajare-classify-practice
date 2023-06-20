@@ -127,32 +127,86 @@ class Word:
 
 class Sentence(list[Word]):
     def __init__(self, words: Iterable[Word]) -> None:
+        """
+        文章を表すクラス。
+
+        Args:
+            - words (Iterable[Word]): 単語のリスト。
+
+        Attributes:
+            - word_len (int): 単語数。
+            - char_len (int): 記号以外の文字数。
+        """
         super().__init__(words)
         self.word_len = len(self)  # 単語数
         self.char_len = sum([len(word.surface) for word in self if not word.is_symbol])  # 記号以外の文字数
 
     @classmethod
     def from_words(cls, words: Iterable[Word]) -> "Sentence":
+        """
+        単語のリストからSentenceオブジェクトを生成する。
+
+        Args:
+            - words (Iterable[Word]): 単語のリスト。
+
+        Returns:
+            - Sentence: Sentenceオブジェクト。
+        """
         return cls(words)
 
     @classmethod
     def from_sentence(cls, tagged_sentence: str) -> "Sentence":
+        """
+        MeCabの出力形式の文字列からSentenceオブジェクトを生成する。
+
+        Args:
+            tagged_sentence (str): MeCabの出力形式の文字列。
+
+        Returns:
+            Sentence: Sentenceオブジェクト。
+        """
         lines = tagged_sentence.splitlines()
         if lines[-1] == "EOS":
             lines.pop()
         return cls([Word(line) for line in lines])
-    
+
     @classmethod
     def from_sentences(cls, tagged_sentences: Iterable[str]) -> list["Sentence"]:
+        """
+        MeCabの出力形式の文字列のリストからSentenceオブジェクトのリストを生成する。
+
+        Args:
+            - tagged_sentences (Iterable[str]): MeCabの出力形式の文字列のリスト。
+
+        Returns:
+            - list[Sentence]: Sentenceオブジェクトのリスト。
+        """
         return list(map(cls.from_sentence, tagged_sentences))
 
     @property
     def removed_symbol(self):
-        """記号を除いた単語のリスト"""
+        """
+        記号を除いた単語のリストを返す。
+
+        Returns:
+            - List[Word]: 記号を除いた単語のリスト。
+        """
         return self.from_words([word for word in self if not word.is_symbol])
 
     def __repr__(self) -> str:
+        """
+        文章を表す文字列を返す。
+
+        Returns:
+            - str: 文章を表す文字列。
+        """
         return "".join([word.surface for word in self])
 
     def __iter__(self) -> Iterator[Word]:
+        """
+        単語のイテレータを返す。
+
+        Returns:
+            - Iterator[Word]: 単語のイテレータ。
+        """
         return super().__iter__()
