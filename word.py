@@ -68,14 +68,6 @@ class Word:
         self.base_form = mecab_res.split("\t")[2]
         self.moras = self.__get_moras()
 
-    @classmethod
-    def from_sentence(cls, tagged_sentence: str) -> "Sentence":
-        """文章からWordのリストを返す"""
-        lines = tagged_sentence.split("\n")
-        if lines[-1] == "EOS":
-            lines = lines[:-1]
-        return Sentence(map(cls, lines))
-
     @property
     def is_content_word(self):
         """内容語かどうか"""
@@ -142,6 +134,13 @@ class Sentence(list[Word]):
     @classmethod
     def from_words(cls, words: Iterable[Word]) -> "Sentence":
         return cls(words)
+
+    @classmethod
+    def from_sentence(cls, tagged_sentence: str) -> "Sentence":
+        lines = tagged_sentence.splitlines()
+        if lines[-1] == "EOS":
+            lines.pop()
+        return cls([Word(line) for line in lines])
 
     @property
     def removed_symbol(self):
