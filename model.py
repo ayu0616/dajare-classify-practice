@@ -47,7 +47,7 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
         - X: 学習データのリスト（文字列で1文）
         - y: 学習データのラベル
             - 1: 駄洒落
-            - -1: 駄洒落でない
+            - 0: 駄洒落でない
         """
         X_words = list(map(Sentence.from_sentence, X))
         self.set_bow(X_words)
@@ -61,7 +61,7 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
         self.corpus = Corpus(X_words)
         consonant_score = np.array(list(map(self.corpus.calc_max_score, X_words)), dtype=np.uint)
 
-        self.lr.fit(consonant_score.reshape(-1, 1), (1 + y) // 2)
+        self.lr.fit(consonant_score.reshape(-1, 1), y)
         consonant_bin = self.lr.predict(consonant_score.reshape(-1, 1))
 
         X_in = np.concatenate([bow, match_yomi_res.reshape(-1, 1), consonant_bin.reshape(-1, 1)], axis=1)
