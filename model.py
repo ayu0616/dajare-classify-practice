@@ -15,7 +15,9 @@ from word import Sentence
 
 
 class PreProcess:
-    def __init__(self, cum_explained_variance_ratio: float = 0.95, bow_count_dup: bool = False, consonant_func: Literal["normal", "max"] = "normal"):
+    def __init__(
+        self, cum_explained_variance_ratio: float = 0.95, bow_count_dup: bool = False, consonant_func: Literal["normal", "max"] = "normal", bow_min_cnt: int = 1
+    ):
         """前処理
 
         Parameters
@@ -29,12 +31,13 @@ class PreProcess:
         self.cum_explained_variance_ratio = cum_explained_variance_ratio
         self.bow_count_dup = bow_count_dup
         self.consonant_func = consonant_func
+        self.bow_min_cnt = bow_min_cnt
 
     def fit(self, X: list[Sentence]):
         for s in X:
             for w in s:
                 self.bow.add(w)
-        self.bow.assign_id()
+        self.bow.assign_id(self.bow_min_cnt)
         X_bow = self.bow.get_vector(X, self.bow_count_dup)
         self.pca.fit(X_bow)
 
