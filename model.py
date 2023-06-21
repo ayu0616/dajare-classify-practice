@@ -82,8 +82,8 @@ class DajareClassifier(BaseEstimator, ClassifierMixin):
         """
         X_words = list(map(Sentence.from_sentence, X))
         bow = self.bow.get_vector(X_words)
-        if self.pca is not None:
-            bow = self.pca.transform(bow)
+        # if self.pca is not None:
+        #     bow = self.pca.transform(bow)
         match_yomi_res = np.array(list(map(match_yomi.check, X_words)), dtype=np.uint)
         consonant_score = np.array(list(map(self.corpus.calc_max_score, X_words)), dtype=np.uint)
         consonant_bin = self.lr.predict(consonant_score.reshape(-1, 1))
