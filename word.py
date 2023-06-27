@@ -17,7 +17,7 @@ class Mora:
         ----------
         - yomi_roman: ローマ字表記の読み仮名で一つのモーラ
         """
-        if not yomi_roman:
+        if yomi_roman == "":
             self.consonant = ""
             self.vowel = ""
         elif yomi_roman == "xtsu":
