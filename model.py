@@ -3,6 +3,7 @@ from typing import Literal
 import numpy as np
 from numpy.typing import NDArray
 from scipy.sparse import csr_matrix, hstack
+from scipy.sparse.linalg import svds
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
@@ -12,6 +13,30 @@ import match_yomi
 from bag_of_words import BagOfWords
 from consonant import Corpus
 from word import Sentence
+
+
+class SparsePCA:
+    """疎行列に対応したPCA"""
+
+    def __init__(self, cum_explained_variance_ratio: float = 0.95, k: int = 6):
+        self.cum_explained_variance_ratio = cum_explained_variance_ratio
+        self.k = k
+        pass
+
+    def fit(self, X: csr_matrix):
+        self.u, self.s, self.vt = svds(X, k=self.k)
+        scores = (self.s**2) / np.sum(self.s**2)
+        for i in range(self.s.size):
+            self.use_num = self.s.size - i - 1
+            if np.sum(scores[self.s.size - i - 1 :]) >= self.cum_explained_variance_ratio:
+                break
+
+    def transform(self, X: csr_matrix):
+        return X @ self.vt.T[:, self.use_num :]
+
+    def fit_transform(self, X: csr_matrix):
+        self.fit(X)
+        return self.transform(X)
 
 
 class PreProcess:
@@ -27,7 +52,7 @@ class PreProcess:
         - consonant_func: 子音類似度の計算方法
         """
         self.bow = BagOfWords()
-        self.pca = PCA()
+        self.pca = PCA(n_components=200)
         self.cum_explained_variance_ratio = cum_explained_variance_ratio
         self.bow_count_dup = bow_count_dup
         self.consonant_func = consonant_func
