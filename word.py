@@ -17,6 +17,9 @@ class Mora:
         ----------
         - yomi_roman: ローマ字表記の読み仮名で一つのモーラ
         """
+        if not yomi_roman:
+            self.consonant = ""
+            self.vowel = ""
         if yomi_roman == "xtsu":
             self.consonant = self.__DOUBLE_CONSONANT__
             self.vowel = self.__NULL__
@@ -29,6 +32,21 @@ class Mora:
         else:
             self.consonant = self.__NULL__
             self.vowel = yomi_roman[-1]
+
+    @classmethod
+    def from_tuple(cls, mora_tuple: tuple[str, str]):
+        m = cls("")
+        m.consonant = mora_tuple[0]
+        m.vowel = mora_tuple[1]
+        return m
+    
+    @classmethod
+    def DOUBLE_CONSONANT_MORA(cls):
+        return cls.from_tuple((cls.__DOUBLE_CONSONANT__, cls.__NULL__))
+    
+    @classmethod
+    def SYLLABIC_NASAL_MORA(cls):
+        return cls.from_tuple((cls.__SYLLABIC_NASAL__, cls.__NULL__))
 
     @property
     def is_only_vowel(self):
