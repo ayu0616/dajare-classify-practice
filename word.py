@@ -130,6 +130,8 @@ class Word:
         """読み仮名のローマ字表記からモーラを返す"""
         if self.base_form == "は" and self.part_of_speech == "助詞":
             romanized_yomi_li = ["wa"]
+        elif self.part_of_speech == "記号":
+            return [Mora("")]
         else:
             romanized_yomi_li = self.__get_romanized_yomi_li()
         return list(map(Mora, romanized_yomi_li))

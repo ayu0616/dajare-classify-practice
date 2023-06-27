@@ -21,7 +21,7 @@ def count(moras: list[Mora], seed_mora: list[Mora], seed_count) -> int:
 
 
 def check(sentence: Sentence) -> bool:
-    moras = [mora for word in sentence for mora in word.moras]
+    moras = [mora for word in sentence for mora in word.moras if not word.is_symbol]
     seed_candidate = [word for word in sentence if word.is_content_word and len(word.moras) >= 2]
     cnt = 0
     for seed in seed_candidate:
