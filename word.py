@@ -20,7 +20,7 @@ class Mora:
         if not yomi_roman:
             self.consonant = ""
             self.vowel = ""
-        if yomi_roman == "xtsu":
+        elif yomi_roman == "xtsu":
             self.consonant = self.__DOUBLE_CONSONANT__
             self.vowel = self.__NULL__
         elif yomi_roman == "n":
@@ -39,11 +39,11 @@ class Mora:
         m.consonant = mora_tuple[0]
         m.vowel = mora_tuple[1]
         return m
-    
+
     @classmethod
     def DOUBLE_CONSONANT_MORA(cls):
         return cls.from_tuple((cls.__DOUBLE_CONSONANT__, cls.__NULL__))
-    
+
     @classmethod
     def SYLLABIC_NASAL_MORA(cls):
         return cls.from_tuple((cls.__SYLLABIC_NASAL__, cls.__NULL__))
