@@ -14,7 +14,7 @@ class Corpus:
         - sentences: `文の単語リスト` のリスト
         """
         sentences = [sentence.removed_symbol for sentence in sentences]
-        line_consonants = [[mora.consonant for word in words for mora in word.moras] for words in sentences]
+        line_consonants = [[mora.consonant for word in words for mora in word.moras if not mora.is_only_vowel] for words in sentences]
         self.n_pq: defaultdict[tuple[str, str], int] = defaultdict(int)
         for cons in line_consonants:
             for i in range(len(cons)):
