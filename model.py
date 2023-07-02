@@ -13,6 +13,7 @@ import match_yomi
 from bag_of_words import BagOfWords
 from consonant import Corpus
 from word import Sentence
+from dajare_score import calc_score
 
 
 class SparsePCA:
@@ -66,24 +67,27 @@ class PreProcess:
         X_bow = self.bow.get_vector(X, self.bow_count_dup)
         self.pca.fit(X_bow)
 
-        self.corpus = Corpus(X)
+        # self.corpus = Corpus(X)
 
     def transform(self, X: list[Sentence]):
         X_bow = self.bow.get_vector(X, self.bow_count_dup)
         X_bow = self.pca.transform(X_bow)
         cum_score = np.cumsum(self.pca.explained_variance_ratio_)
         X_bow = X_bow[:, cum_score < self.cum_explained_variance_ratio]
+        
+        X_score = np.array(list(map(calc_score, X)))
 
-        X_match_yomi = np.array(list(map(match_yomi.check, X)), dtype=np.uint)
+        # X_match_yomi = np.array(list(map(match_yomi.check, X)), dtype=np.uint)
 
-        if self.consonant_func == "normal":
-            X_consonant_score = np.array(list(map(self.corpus.calc_score, X)), dtype=np.uint)
-        elif self.consonant_func == "max":
-            X_consonant_score = np.array(list(map(self.corpus.calc_max_score, X)), dtype=np.uint)
-        else:
-            raise ValueError(f"consonant_func must be 'normal' or 'max', but {self.consonant_func}")
+        # if self.consonant_func == "normal":
+        #     X_consonant_score = np.array(list(map(self.corpus.calc_score, X)), dtype=np.uint)
+        # elif self.consonant_func == "max":
+        #     X_consonant_score = np.array(list(map(self.corpus.calc_max_score, X)), dtype=np.uint)
+        # else:
+        #     raise ValueError(f"consonant_func must be 'normal' or 'max', but {self.consonant_func}")
 
-        X_res = np.concatenate([X_bow, X_match_yomi.reshape(-1, 1), X_consonant_score.reshape(-1, 1)], axis=1)
+        # X_res = np.concatenate([X_bow, X_match_yomi.reshape(-1, 1), X_consonant_score.reshape(-1, 1)], axis=1)
+        X_res = np.concatenate([X_bow, X_score.reshape(-1, 1)], axis=1)
         return X_res
 
     def fit_transform(self, X: list[Sentence]):
