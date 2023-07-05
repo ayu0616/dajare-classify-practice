@@ -2,6 +2,12 @@
 
 使用技術: Google Cloud, Python, 機械学習
 
+# Notion
+
+Notionにもこちらと同様の説明があります。（Notionのほうが見やすいと思います）
+
+[こちらからどうぞ！](https://ayu0616.notion.site/ae41960de3584e8c9559978d135db670?pvs=4)
+
 # 概要
 
 - **大学のゼミ**の研究課題として制作中
