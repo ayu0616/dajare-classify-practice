@@ -2,10 +2,6 @@
 
 使用技術: Google Cloud, Python, 機械学習
 
-# GitHub
-
-[https://github.com/ayu0616/dajare-classify-practice](https://github.com/ayu0616/dajare-classify-practice)
-
 # 概要
 
 - **大学のゼミ**の研究課題として制作中
